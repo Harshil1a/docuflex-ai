@@ -1,0 +1,50 @@
+name: DocuFlex AI Production CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js (Frontend)
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Build Frontend
+      run: |
+        npm install
+        npm run build -w frontend
+
+    - name: Setup Java 21 (Backend)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build Backend with Maven
+      run: |
+        cd backend
+        chmod +x mvnw
+        ./mvnw clean package -DskipTests
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: docuflex-ai-production-jar
+        path: backend/target/*.jar
+        retention-days: 7
+
+    - name: Verify Docker Build
+      run: |
+        docker build -t docuflex-ai:test .

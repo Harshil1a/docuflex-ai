@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: docuflex-ai
+  servlet:
+    multipart:
+      max-file-size: 24MB
+      max-request-size: 28MB
+  data:
+    mongodb:
+      # Override with MONGODB_URI (e.g. from repo-root .env loaded by scripts/run-backend.cjs).
+      uri: ${MONGODB_URI:mongodb://localhost:27017/docuflex}
+      auto-index-creation: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:<your-email>}
+    password: ${MAIL_PASSWORD:<app-password>}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
+server:
+  port: ${PORT:8081}
+  forward-headers-strategy: framework
+
+docuflex:
+  storage:
+    dir: ${DOCUFLEX_STORAGE}
+    mode: ${STORAGE_MODE:local} # can be 'local' or 's3'
+  admin:
+    key: ${ADMIN_REGISTRATION_KEY}
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174}
+
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET}
+    region: ${AWS_REGION:us-east-1}
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
