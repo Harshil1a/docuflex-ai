@@ -23,6 +23,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     @Autowired
     private UserRepository userRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${docuflex.frontend.url:http://localhost:5173}")
+    private String frontendUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -38,9 +41,6 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         });
 
         String token = jwtUtils.generateToken(user.getEmail(), user.getRole());
-
-        @org.springframework.beans.factory.annotation.Value("${docuflex.frontend.url:http://localhost:5173}")
-        String frontendUrl;
 
         String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl)
                 .queryParam("token", token)
