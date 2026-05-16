@@ -39,7 +39,10 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         String token = jwtUtils.generateToken(user.getEmail(), user.getRole());
 
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/")
+        @org.springframework.beans.factory.annotation.Value("${docuflex.frontend.url:http://localhost:5173}")
+        String frontendUrl;
+
+        String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl)
                 .queryParam("token", token)
                 .build().toUriString();
 
