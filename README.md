@@ -74,5 +74,4 @@ A robust Role-Based Access Control system. It features:
 2.  **Environment**: Set your `GROQ_API_KEY` and `MONGODB_URI` in `.env`.
 3.  **Run**: `npm run dev`
 
----
-*Developed with excellence by the Antigravity AI Team.*
+
